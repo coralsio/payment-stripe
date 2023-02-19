@@ -1,0 +1,22 @@
+{
+    "code": "corals-payment-stripe",
+    "name": "Stripe Payment Gateway",
+    "author": "Corals",
+    "type": "payment",
+    "description": "Payment Gateway, charges, subscriptions, invoices...",
+    "namespace": "Corals\\Modules\\Payment\\Stripe",
+    "provider": "StripeServiceProvider",
+    "version": "3.2.2",
+    "folder": "Stripe",
+    "autoload": "psr-4",
+    "icon": "fa fa-cc-stripe",
+    "require": {
+        "corals-payment": "^4.0"
+    },
+    "supported_platforms": [
+        "Ecommerce",
+        "Marketplace",
+        "Subscription",
+        "Reservation"
+    ]
+}
