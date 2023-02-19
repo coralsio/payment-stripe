@@ -1,0 +1,11 @@
+3.2
+use GatewayStatusTrait from foundation
+-------------------------------
+2.1
+Add platform to module.json for laraship installer
+------------------------------------
+2.0
+Add Payment Intent API
+Upgrade Stripe to latest version
+SCA Support
+------------------------------
