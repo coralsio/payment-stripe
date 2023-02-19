@@ -17,7 +17,7 @@ class StripeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        $this->registerModulesPackages();
+        $this->registerModulesPackages();
     }
 
     /**
