@@ -3,8 +3,7 @@
     "description": "Payment Stripe",
     "keywords": [
         "corals",
-        "utility",
-        "comment"
+        "payment-stripe"
     ],
     "homepage": "https://github.com/coralsio/payment-stripe",
     "license": "MIT",
@@ -39,7 +38,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Corals\\Modules\\payment\\payment-stripe"
+                "Corals\\Modules\\Payment\\Stripe\\StripeServiceProvider"
             ]
         }
     },
