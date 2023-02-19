@@ -11,7 +11,8 @@
     "autoload": "psr-4",
     "icon": "fa fa-cc-stripe",
     "require": {
-        "corals-payment": "^4.0"
+        "corals-payment": "^4.0",
+        "corals/payment-stripe": "@dev"
     },
     "supported_platforms": [
         "Ecommerce",
