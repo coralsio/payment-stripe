@@ -7,7 +7,7 @@
     "namespace": "Corals\\Modules\\Payment\\Stripe\\",
     "provider": "StripeServiceProvider",
     "version": "3.2.2",
-    "folder": "Stripe",
+    "folder": "payment-stripe",
     "autoload": "psr-4",
     "icon": "fa fa-cc-stripe",
     "require": {
