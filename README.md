@@ -1,69 +1,84 @@
+# Corals Payment Stripe
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
+- Stripe has two environments Sandbox and Live, make sure to use sandbox for testing before going live
 
-# :package_description
+- Under Subscription -> Payment Settings you need to add your stripe account keys which can be grabbed from your stripe account :
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![Tests](https://github.com/:vendor_slug/:package_slug/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/:vendor_slug/:package_slug/actions/workflows/run-tests.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This package can be used as to scaffold a framework agnostic package. Follow these steps to get started:
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/stripe_settings.png" alt="" width="508" height="388"></p>
+<p>&nbsp;</p>
 
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
+- To enable Sandbox switch Sandbox mode to True.
 
-## Support us
+- API Keys can be grabbed from https://dashboard.stripe.com/account/apikeys
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/stripe_api_keys.png"></p>
+<p>&nbsp;</p>
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+- Webhooks Key can be grabbed from https://dashboard.stripe.com/account/webhooks
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+- Your Webhook URL should behttps://[you-domain.com]/webhooks/stripe
+
+- <p><img src="https://www.laraship.com/wp-content/uploads/2017/12/strpe_webhooks.png"></p>
+<p>&nbsp;</p>
+
+- Webhooks Subscription Events:
+```php
+'invoice.created' => \Corals\Modules\Payment\Stripe\Job\HandleInvoiceCreated::class,
+'invoice.payment_succeeded' => \Corals\Modules\Payment\Stripe\Job\HandleInvoicePaymentSucceeded::class,
+'invoice.payment_failed' => \Corals\Modules\Payment\Stripe\Job\HandleInvoicePaymentFailed::class,
+'customer.subscription.deleted' => \Corals\Modules\Payment\Stripe\Job\HandleCustomerSubscriptionDeleted::class,
+'customer.subscription.trial_will_end' => \Corals\Modules\Payment\Stripe\Job\HandleCustomerTrialWillEnd::class,
+```
+
+### Enable Stripe Connect:
+The stripe connect can be used to enable auto payout for vendors under Laraship Marketplace, this works by having vendors connecting their stripe to Laraship platform’s main Stripe account, and their payments will be transferred upon purchases, so no manual withdrawals needed. also once order cancelled the transfer will be reversed from the vendor account automatically.
+
+<p>&nbsp;</p>
+
+- To Enable Stripe Connect, go to Payments – Payment Settings – Stripe
+
+- Activate Stripe Connect and insert Client ID as shown below
+
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/Laarvel-stripe-connect-1024x190.png"></p>
+<p>&nbsp;</p>
+
+The client ID can be obtained from https://dashboard.stripe.com/settings/applications
+
+- Add Redirect URL to connect settings under Stripe, it should be {{doamin}}/stripe/authorize-connect
+
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/stripe-connect-key-redirect-1024x463.png"></p>
+<p>&nbsp;</p>
+
+- The vendor Should see a new tab under Store Settings, which will list the Stripe Connect link to connect to, click on “Connect with Stripe”, this will go through Stripe linking process
+
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/vendor-stripe-connect-settings-1024x391.png"></p>
+<p>&nbsp;</p>
+
+
+- once you complete the Stripe connect process you will be redirected to Laraship Platform and Stripe connect status will be turned to Connected
+
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/stripe-connect-redirect-1024x677.png"></p>
+<p>&nbsp;</p>
+
+<p><img src="https://www.laraship.com/wp-content/uploads/2017/12/vendor-stripe-connect-activated-1024x245.png"></p>
+<p>&nbsp;</p>
+
+- After that, Any order amount made for this vendor from orders will be transferred automatically to the Vendor stripe account after deducting the fees.
+
+- <p><img src="https://www.laraship.com/wp-content/uploads/2017/12/vendor-payout.png"></p>
+<p>&nbsp;</p>
+
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
-```
-
-## Usage
-
-```php
-$skeleton = new VendorName\Skeleton();
-echo $skeleton->echoPhrase('Hello, VendorName!');
+composer require corals/payment-stripe
 ```
 
 ## Testing
 
 ```bash
-composer test
+vendor/bin/phpunit vendor/corals/payment-stripe/tests 
 ```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [:author_name](https://github.com/:author_username)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
