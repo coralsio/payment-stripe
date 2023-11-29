@@ -6,7 +6,7 @@
     "description": "Payment Gateway, charges, subscriptions, invoices...",
     "namespace": "Corals\\Modules\\Payment\\Stripe\\",
     "provider": "StripeServiceProvider",
-    "version": "3.2.2",
+    "version": "10.0.0",
     "folder": "payment-stripe",
     "autoload": "psr-4",
     "icon": "fa fa-cc-stripe",
