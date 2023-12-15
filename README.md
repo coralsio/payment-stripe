@@ -1,5 +1,8 @@
 # Corals Payment Stripe
 
+Stripe Product Manager is the first Laravel Plugin is the first Laravel Plugin for Stripe Products Integration. integrate Stripe Products with Laravel Platform.
+
+
 - Stripe has two environments Sandbox and Live, make sure to use sandbox for testing before going live
 
 - Under Subscription -> Payment Settings you need to add your stripe account keys which can be grabbed from your stripe account :
