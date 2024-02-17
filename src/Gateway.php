@@ -1000,7 +1000,7 @@ class Gateway extends AbstractGateway
         return $paramters;
     }
 
-    public function prepareOrderParameters($order, $user, $cartItems = [], $shipping_rate)
+    public function prepareOrderParameters($order, $model, $cartItems = [], $shipping_rate)
     {
         $items = [];
         foreach ($cartItems as $cartItem) {
@@ -1018,19 +1018,21 @@ class Gateway extends AbstractGateway
                 'type' => 'shipping',
                 'amount' => intval($shipping_rate['amount']),
                 'description' => $shipping_rate['description'],
-
             ];
         }
         $shipping = session()->get('shipping');
+
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
         return [
             'id' => $order ? $order->id : '',
             'currency' => \Payments::admin_currency_code(true),
-            'customer_id' => $user->integration_id,
+            'customer_id' => $integration_id,
             'items' => $items,
-            'email' => $user->email,
+            'email' => $model->email,
             'selected_shipping_method' => session()->get('selected_shipping_method'),
             "shipping" => array(
-                "name" => $user->full_name,
+                "name" => $model->full_name,
                 "address" => array(
                     "line1" => $shipping['address_1'],
                     "city" => $shipping['city'],
@@ -1050,12 +1052,14 @@ class Gateway extends AbstractGateway
         return $parameters;
     }
 
-    public function prepareCustomerParameters(User $user, $extra = [])
-    {
-        $parameters = ['description' => $user->full_name, 'email' => $user->email];
 
-        if (!is_null($user->integration_id)) {
-            $parameters['customerReference'] = $user->integration_id;
+    public function prepareCustomerParameters($model, $extra = [])
+    {
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
+        $parameters = [];
+        if (!is_null($integration_id)) {
+            $parameters['customerReference'] = $integration_id;
         }
         if (isset($extra['checkoutToken'])) {
             $parameters['token'] = $extra['checkoutToken'];
@@ -1118,18 +1122,23 @@ class Gateway extends AbstractGateway
         ];
     }
 
-    public function prepareInvoiceParameters($user, $plan)
+    public function prepareInvoiceParameters($model, $plan)
     {
-        return ['customerReference' => $user->integration_id];
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
+        return ['customerReference' => $integration_id];
     }
 
     public function prepareSubscriptionParameters(
-        Plan $plan,
-        User $user,
+        Plan         $plan,
+                     $model,
         Subscription $subscription = null,
-        $subscription_data = null
-    ) {
-        $parameters = ['customerReference' => $user->integration_id, 'plan' => $plan->code];
+                     $subscription_data = null
+    )
+    {
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
+        $parameters = ['customerReference' => $integration_id, 'plan' => $plan->code];
         if ($subscription) {
             $parameters['trial_end'] = $subscription->trial_ends_at ? $subscription->trial_ends_at->getTimestamp() : 'now';
             $parameters['subscriptionReference'] = $subscription->subscription_reference;
@@ -1221,10 +1230,12 @@ class Gateway extends AbstractGateway
     }
 
 
-    public function prepareSubscriptionCancellationParameters(User $user, Subscription $current_subscription)
+    public function prepareSubscriptionCancellationParameters($model, Subscription $current_subscription)
     {
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
         $parameters = [
-            'customerReference' => $user->integration_id,
+            'customerReference' => $integration_id,
             'subscriptionReference' => $current_subscription->subscription_reference,
             'atPeriodEnd' => true
         ];
@@ -1268,9 +1279,11 @@ class Gateway extends AbstractGateway
     }
 
 
-    function userRequirePayment(User $user)
+    function modelRequirePayment($model)
     {
-        if (is_null($user->integration_id)) {
+        $integration_id = $model->getObjectReference($this->getName(), 'CUSTOMER_REF');
+
+        if (is_null($integration_id)) {
             return true;
         }
         return false;
