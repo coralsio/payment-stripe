@@ -6,6 +6,7 @@ use Corals\Foundation\Models\GatewayStatus;
 use Corals\Foundation\Providers\BaseUninstallModuleServiceProvider;
 use Corals\Settings\Models\Setting;
 use Corals\User\Models\User;
+use Illuminate\Support\Facades\Schema;
 
 class UninstallModuleServiceProvider extends BaseUninstallModuleServiceProvider
 {
@@ -22,7 +23,9 @@ class UninstallModuleServiceProvider extends BaseUninstallModuleServiceProvider
 
         Setting::where('code', 'like', 'payment_stripe%')->delete();
 
-        User::where('gateway', 'Stripe')->update(['gateway' => NULL]);
+        if (Schema::hasColumn('users', 'gateway')) {
+            User::where('gateway', 'Stripe')->update(['gateway' => NULL]);
+        }
 
         GatewayStatus::where('gateway', 'Stripe')->delete();
     }

@@ -290,6 +290,15 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * @param array $parameters
+     * @return mixed
+     */
+    public function createPaymentIntent(array $parameters = array())
+    {
+        return $this->createRequest('\Corals\Modules\Payment\Stripe\Message\CreatePaymentIntentRequest', $parameters);
+    }
+
+    /**
      * Refund Request.
      *
      * When you create a new refund, you must specify a
@@ -1128,7 +1137,8 @@ class Gateway extends AbstractGateway
         User $user,
         Subscription $subscription = null,
         $subscription_data = null
-    ) {
+    )
+    {
         $parameters = ['customerReference' => $user->integration_id, 'plan' => $plan->code];
         if ($subscription) {
             $parameters['trial_end'] = $subscription->trial_ends_at ? $subscription->trial_ends_at->getTimestamp() : 'now';
@@ -1239,11 +1249,29 @@ class Gateway extends AbstractGateway
             'amount' => $amount,
             'currency' => $currency,
             'description' => $description,
-            'confirm' => true,
-            'paymentMethod' => $params['payment_method_id']
+            'confirm' => data_get($params, 'confirm', true) ?? true,
+            'paymentMethod' => $params['payment_method_id'],
+            'CustomerReference' => data_get($params, 'customerReference'),
+            'confirmation_method' => data_get($params, 'confirmation_method', 'manual'),
+            'capture_method' => data_get($params, 'capture_method', 'manual'),
         ];
 
         return $parameters;
+    }
+
+    /**
+     * @param $amount
+     * @param array $params
+     * @return array
+     */
+    public function preparePaymentIntentParameters($amount, $params = [])
+    {
+        return [
+            'description' => data_get($params, 'description'),
+            'currency' => data_get($params, 'currency'),
+            'statement_descriptor' => data_get($params, 'statement_descriptor'),
+            'amount' => $amount
+        ];
     }
 
 
@@ -1260,6 +1288,17 @@ class Gateway extends AbstractGateway
     public function checkPaymentToken(array $parameters = array())
     {
         return $this->createRequest('\Corals\Modules\Payment\Stripe\Message\FetchPaymentIntentRequest', $parameters);
+    }
+
+    public function fetchPaymentMethod(array $parameters = array())
+    {
+        return $this->createRequest('\Corals\Modules\Payment\Stripe\Message\FetchPaymentMethodRequest', $parameters);
+    }
+
+
+    public function updatePaymentIntent(array $parameters = [])
+    {
+        return $this->createRequest('\Corals\Modules\Payment\Stripe\Message\UpdatePaymentIntentRequest', $parameters);
     }
 
     public function confirmPaymentToken(array $parameters = array())

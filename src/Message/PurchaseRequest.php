@@ -129,6 +129,26 @@ class PurchaseRequest extends AbstractRequest
         return $this->getParameter('confirm');
     }
 
+    public function getConfirmationMethod()
+    {
+        return $this->getParameter('confirmation_method');
+    }
+
+    public function getCaptureMethod()
+    {
+        return $this->getParameter('confirmation_method');
+    }
+
+    public function setCaptureMethod($value)
+    {
+        return $this->setParameter('capture_method', $value);
+    }
+
+    public function setConfirmationMethod($value)
+    {
+        return $this->setParameter('confirmation_method', $value);
+    }
+
     /**
      * @return mixed
      */
@@ -346,8 +366,8 @@ class PurchaseRequest extends AbstractRequest
             $data['customer'] = $this->getCustomerReference();
         }
 
-        $data['confirmation_method'] = 'manual';
-        $data['capture_method'] = 'manual';
+        $data['confirmation_method'] = $this->getConfirmationMethod() ?? 'manual';
+        $data['capture_method'] = $this->getCaptureMethod() ?? 'manual';
 
         $data['confirm'] = $this->getConfirm() ? 'true' : 'false';
 

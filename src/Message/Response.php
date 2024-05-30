@@ -51,7 +51,7 @@ class Response extends AbstractResponse
      * Get the charge reference from the response of FetchChargeRequest.
      *
      * @return array|null
-     *@see \Corals\Modules\Payment\Stripe\Message\Response::getTransactionReference()
+     * @see \Corals\Modules\Payment\Stripe\Message\Response::getTransactionReference()
      * @deprecated 2.3.3:3.0.0 duplicate of \Corals\Modules\Payment\Stripe\Message\Response::getTransactionReference()
      */
     public function getChargeReference()
@@ -184,8 +184,15 @@ class Response extends AbstractResponse
     {
         if (isset($this->data['object']) && 'payment_intent' === $this->data['object']) {
 
+            return json_encode([
+                'payment_intent_id' => $this->data['id'],
+                'status' => $this->data['status'],
+                'next_action' => $this->data['next_action'],
+                'client_secret' => $this->data['client_secret'],
+                'amount' => $this->data['amount'],
+                'payment_method' => $this->data['payment_method']
+            ]);
 
-            return json_encode(['payment_intent_id' => $this->data['id'], 'status' => $this->data['status'], 'next_action' => $this->data['next_action'], 'client_secret' => $this->data['client_secret']]);
         }
 
         return null;
