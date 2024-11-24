@@ -1,6 +1,0 @@
-{
-  "require": {
-    "stripe/stripe-php": "^5.7",
-    "corals/payment": "@dev"
-  }
-}
