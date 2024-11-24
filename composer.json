@@ -23,6 +23,10 @@
             "Tests\\": "tests/"
         }
     },
+    "require": {
+        "stripe/stripe-php": "^5.7",
+        "corals/payment": "@dev"
+    },
     "require-dev": {
         "phpunit/phpunit": "^9",
         "laravel/pint": "^1.0"
